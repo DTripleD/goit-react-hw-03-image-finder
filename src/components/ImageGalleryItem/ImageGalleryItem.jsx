@@ -1,17 +1,11 @@
 import { GalletyItem, GalleryItemImage } from './ImageGalleryItem.styled';
 
-import {Modal} from '../Modal/Modal'
-
-export const ImageGalleryItem = ({isOpen, largeImageURL, webformatURL, open}) => {
-
-
-
-    return (
-      <GalletyItem className="gallery-item" onClick={() => isOpen()}>
-        <GalleryItemImage src={webformatURL} alt="" />
-        {open && <Modal largeImageURL={largeImageURL}></Modal>}
-      </GalletyItem>
-    );
-  }
+export const ImageGalleryItem = ({ webformatURL, id, modalOpen }) => {
+  return (
+    <GalletyItem className="gallery-item" onClick={() => modalOpen(id)}>
+      <GalleryItemImage src={webformatURL} alt="" />
+    </GalletyItem>
+  );
+};
 
 // PROPS { id, webformatURL, largeImageURL }

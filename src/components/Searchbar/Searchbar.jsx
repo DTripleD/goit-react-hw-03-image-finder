@@ -23,7 +23,7 @@ export class Searchbar extends Component {
         <SearchForm
           onSubmit={event => {
             event.preventDefault();
-            this.props.onSubmit();
+            this.props.onSubmit(this.state.inputValue);
           }}
         >
           <SearchFormButton type="submit">

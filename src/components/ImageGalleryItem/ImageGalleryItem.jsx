@@ -1,9 +1,9 @@
 import { GalletyItem, GalleryItemImage } from './ImageGalleryItem.styled';
 
-export const ImageGalleryItem = ({ webformatURL, id, modalOpen }) => {
+export const ImageGalleryItem = ({ webformatURL, modalOpen , largeImageURL, tag }) => {
   return (
-    <GalletyItem className="gallery-item" onClick={() => modalOpen(id)}>
-      <GalleryItemImage src={webformatURL} alt="" />
+    <GalletyItem onClick={() => modalOpen(largeImageURL)}>
+      <GalleryItemImage src={webformatURL} alt={tag} />
     </GalletyItem>
   );
 };

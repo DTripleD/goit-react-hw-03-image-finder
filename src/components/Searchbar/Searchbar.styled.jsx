@@ -41,7 +41,7 @@ export const SearchFormButton = styled.button`
   width: 48px;
   height: 48px;
   border: 0;
-  /* background-image: url('https://icons8.com/icon/132/search'); */
+  background-image: url('../../images/icons8-search-50.png');
   background-size: 40%;
   background-repeat: no-repeat;
   background-position: center;

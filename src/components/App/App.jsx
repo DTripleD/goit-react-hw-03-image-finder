@@ -21,13 +21,12 @@ export class App extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.input !== this.state.input) {
       fetch(
-        `https://pixabay.com/api/?q=cat&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+        `https://pixabay.com/api/?q=${this.state.input}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
       )
         .then(response => {
           return response.json();
         })
         .then(data => {
-          console.log(data);
           this.setState({ photoList: data.hits });
         });
 
@@ -35,33 +34,32 @@ export class App extends Component {
     }
   }
 
-  modalOpen = id => {
-    this.setState({ isOpen: true });
+  modalOpen = largeImageURL => {
     this.setState({
-      modalImg: this.state.photoList.find(item => item.id === id).largeImageURL,
+      modalImg: largeImageURL,
+      isOpen: true,
     });
   };
 
-  modalClose = e => {
-    console.log(e.code)
-    if(e.key === "Escape"){
-      console.log("dfdf");
-      this.setState({ isOpen: false });
-    }
+  modalClose = () => {
+    this.setState({ isOpen: false });
   };
 
   render() {
     return (
-      <AppWrapper onKeyDown={this.modalClose}>
+      <AppWrapper>
         <Searchbar onSubmit={this.onFormSubmit} />
         {this.state.status && (
           <ImageGallery
             photoList={this.state.photoList}
             modalOpen={this.modalOpen}
-          ></ImageGallery>
+          />
         )}
         {this.state.isOpen && (
-          <Modal largeImageURL={this.state.modalImg}></Modal>
+          <Modal
+            largeImageURL={this.state.modalImg}
+            modalClose={this.modalClose}
+          />
         )}
       </AppWrapper>
     );

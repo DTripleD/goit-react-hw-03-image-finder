@@ -11,32 +11,40 @@ export class App extends Component {
     modalImg: '',
     isLoading: false,
     page: 1,
-    status: false,
     isEmpty: false,
     isSeeMore: false,
   };
 
-  onFormSubmit = searchQuery => {
-    this.setState({ input: searchQuery, photoList: [], page: 1 });
+  onFormSubmit = event => {
+    event.preventDefault();
+    this.setState({
+      input: event.target.input.value.trim(),
+      photoList: [],
+      page: 1,
+      isLoading: true,
+      isEmpty: false,
+    });
   };
 
   componentDidUpdate(prevProps, prevState) {
     const { input, page } = this.state;
     if (prevState.input !== input || prevState.page !== page) {
-      this.setState({ isLoading: true, isEmpty: false, isSeeMore: false });
       Images.getImages(input, page)
         .then(({ hits, total }) => {
-          if (hits.length === 0 || this.state.input.trim() === '') {
+          console.log(total);
+          if (hits.length === 0) {
             return this.setState({
+              isLoading: false,
               isEmpty: true,
               input: '',
+              isSeeMore: false,
             });
+          } else {
+            return this.setState(prevState => ({
+              photoList: [...prevState.photoList, ...hits],
+              isSeeMore: page < Math.ceil(total / 12),
+            }));
           }
-          this.setState(prevState => ({
-            photoList: [...prevState.photoList, ...hits],
-            isSeeMore: page < Math.ceil(total / 12),
-            status: true,
-          }));
         })
         .catch(error => console.log(error))
         .finally(() => {
@@ -47,7 +55,7 @@ export class App extends Component {
 
   onLoadMore = () => {
     this.setState(prevState => {
-      return { page: prevState.page + 1 };
+      return { page: prevState.page + 1, isLoading: true };
     });
   };
 
@@ -67,7 +75,7 @@ export class App extends Component {
       <AppWrapper>
         <Searchbar onSubmit={this.onFormSubmit} />
         {this.state.isEmpty && <Warning>Oops... Something went wrong</Warning>}
-        {this.state.status && (
+        {!this.state.isEmpty && (
           <ImageGallery
             photoList={this.state.photoList}
             modalOpen={this.modalOpen}

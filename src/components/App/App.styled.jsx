@@ -6,3 +6,9 @@ export const AppWrapper = styled.div`
   grid-gap: 16px;
   padding-bottom: 24px;
 `;
+
+export const Warning = styled.h2`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

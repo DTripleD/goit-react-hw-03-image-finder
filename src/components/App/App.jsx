@@ -1,10 +1,7 @@
 import { Component } from 'react';
-import { Searchbar } from 'components/Searchbar/Searchbar';
-import { AppWrapper } from './App.styled';
-import { ImageGallery } from 'components/ImageGallery/ImageGallery';
-import { Modal } from 'components/Modal/Modal';
-
-const API_KEY = '34891295-3c871ab0268d353f15c88782f';
+import { AppWrapper, Warning } from './App.styled';
+import { Searchbar, ImageGallery, Modal, Button, Loader } from 'components';
+import * as Images from '../../services/ApiService';
 
 export class App extends Component {
   state = {
@@ -12,27 +9,47 @@ export class App extends Component {
     input: '',
     isOpen: false,
     modalImg: '',
+    isLoading: false,
+    page: 1,
+    status: false,
+    isEmpty: false,
+    isSeeMore: false,
   };
 
   onFormSubmit = searchQuery => {
-    this.setState({ input: searchQuery });
+    this.setState({ input: searchQuery, photoList: [], page: 1 });
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.input !== this.state.input) {
-      fetch(
-        `https://pixabay.com/api/?q=${this.state.input}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-      )
-        .then(response => {
-          return response.json();
+    const { input, page } = this.state;
+    if (prevState.input !== input || prevState.page !== page) {
+      this.setState({ isLoading: true, isEmpty: false, isSeeMore: false });
+      Images.getImages(input, page)
+        .then(({ hits, total }) => {
+          if (hits.length === 0 || this.state.input.trim() === '') {
+            return this.setState({
+              isEmpty: true,
+              input: '',
+            });
+          }
+          this.setState(prevState => ({
+            photoList: [...prevState.photoList, ...hits],
+            isSeeMore: page < Math.ceil(total / 12),
+            status: true,
+          }));
         })
-        .then(data => {
-          this.setState({ photoList: data.hits });
+        .catch(error => console.log(error))
+        .finally(() => {
+          this.setState({ isLoading: false });
         });
-
-      this.setState({ status: true });
     }
   }
+
+  onLoadMore = () => {
+    this.setState(prevState => {
+      return { page: prevState.page + 1 };
+    });
+  };
 
   modalOpen = largeImageURL => {
     this.setState({
@@ -49,6 +66,7 @@ export class App extends Component {
     return (
       <AppWrapper>
         <Searchbar onSubmit={this.onFormSubmit} />
+        {this.state.isEmpty && <Warning>Oops... Something went wrong</Warning>}
         {this.state.status && (
           <ImageGallery
             photoList={this.state.photoList}
@@ -61,6 +79,8 @@ export class App extends Component {
             modalClose={this.modalClose}
           />
         )}
+        {this.state.isSeeMore && <Button onLoadMore={this.onLoadMore}></Button>}
+        {this.state.isLoading && <Loader />}
       </AppWrapper>
     );
   }

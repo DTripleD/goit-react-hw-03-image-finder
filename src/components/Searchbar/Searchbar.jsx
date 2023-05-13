@@ -14,7 +14,7 @@ export class Searchbar extends Component {
 
   changeState = event => {
     event.preventDefault();
-    this.setState({ inputValue: event.target.value });
+    this.setState({ inputValue: event.target.value.trim() });
   };
 
   render() {
@@ -22,8 +22,10 @@ export class Searchbar extends Component {
       <SearchbarWrapper>
         <SearchForm
           onSubmit={event => {
+            console.log();
             event.preventDefault();
             this.props.onSubmit(this.state.inputValue);
+            event.target.input.value = '';
           }}
         >
           <SearchFormButton type="submit">

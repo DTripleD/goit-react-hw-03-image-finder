@@ -13,52 +13,50 @@ export class App extends Component {
     page: 1,
     isEmpty: false,
     isSeeMore: false,
-  };
-
-  onFormSubmit = (querry) => {
-    this.setState({
-      input: querry,
-      photoList: [],
-      page: 1,
-      isLoading: true,
-      isEmpty: false,
-    });
+    error: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
     const { input, page } = this.state;
+
     if (prevState.input !== input || prevState.page !== page) {
+      this.setState({ isLoading: true });
       Images.getImages(input, page)
         .then(({ hits, total }) => {
-
-          if (hits.length === 0) {
-                      
+          if (!hits.length) {
             this.setState({
               isEmpty: true,
-              input: '',
-              isSeeMore: false,
             });
-            return
+            return;
           }
-          if(hits.length > 0){
-            console.log(total);
-            return this.setState(prevState => ({
-              photoList: [...prevState.photoList, ...hits],
-              isSeeMore: page < Math.ceil(total / 12),
-            }));
-          }
+
+          this.setState(prevState => ({
+            photoList: [...prevState.photoList, ...hits],
+            isSeeMore: page < Math.ceil(total / 12),
+          }));
         })
-        .catch(error => console.log(error))
+        .catch(error => {
+          this.setState({ error: error.message });
+        })
         .finally(() => {
           this.setState({ isLoading: false });
         });
     }
   }
 
-  onLoadMore = () => {
-    this.setState(prevState => {
-      return { page: prevState.page + 1, isLoading: true };
+  onFormSubmit = querry => {
+    this.setState({
+      input: querry,
+      page: 1,
+      photoList: [],
+      isSeeMore: false,
+      isEmpty: false,
+      error: null,
     });
+  };
+
+  onLoadMore = () => {
+    this.setState(prevState => ({ page: prevState.page + 1, isLoading: true }));
   };
 
   modalOpen = largeImageURL => {
@@ -76,13 +74,15 @@ export class App extends Component {
     return (
       <AppWrapper>
         <Searchbar onSubmit={this.onFormSubmit} />
-        {this.state.isEmpty && <Warning>Oops... Something went wrong</Warning>}
-        {!this.state.isEmpty && (
+        {this.state.isEmpty ? (
+          <Warning>Oops... Something went wrong</Warning>
+        ) : (
           <ImageGallery
             photoList={this.state.photoList}
             modalOpen={this.modalOpen}
           />
         )}
+
         {this.state.isOpen && (
           <Modal
             largeImageURL={this.state.modalImg}
@@ -91,6 +91,9 @@ export class App extends Component {
         )}
         {this.state.isSeeMore && <Button onLoadMore={this.onLoadMore}></Button>}
         {this.state.isLoading && <Loader />}
+        {this.state.error && (
+          <Warning textAlign="center">Sorry. {this.state.error} ... 😭</Warning>
+        )}
       </AppWrapper>
     );
   }

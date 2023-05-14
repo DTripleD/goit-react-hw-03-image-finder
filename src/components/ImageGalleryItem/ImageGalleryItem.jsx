@@ -2,12 +2,12 @@ import { GalletyItem, GalleryItemImage } from './ImageGalleryItem.styled';
 
 export const ImageGalleryItem = ({
   webformatURL,
-  toggleModal,
+  modalOpen,
   largeImageURL,
   tag,
 }) => {
   return (
-    <GalletyItem onClick={() => toggleModal(largeImageURL)}>
+    <GalletyItem onClick={() => modalOpen(largeImageURL)}>
       <GalleryItemImage src={webformatURL} alt={tag} />
     </GalletyItem>
   );

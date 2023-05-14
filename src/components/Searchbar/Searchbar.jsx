@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import {
   SearchForm,
   SearchbarWrapper,
@@ -6,25 +7,37 @@ import {
   SearchFormButtonLabel,
 } from './Searchbar.styled';
 
-export const Searchbar = ({ onSubmit }) => {
-  return (
-    <SearchbarWrapper>
-      <SearchForm
-        onSubmit={event => {
-          onSubmit(event);
-        }}
-      >
-        <SearchFormButton type="submit">
-          <SearchFormButtonLabel>Search</SearchFormButtonLabel>
-        </SearchFormButton>
-        <SearchFormInput
-          type="text"
-          name="input"
-          autocomplete="off"
-          autoFocus
-          placeholder="Search images and photos"
-        />
-      </SearchForm>
-    </SearchbarWrapper>
-  );
-};
+export class Searchbar extends Component {
+  state = {
+    input: '',
+  };
+
+  onInput = event => {
+    this.setState({ input: event.target.value.trim() });
+  };
+  render() {
+    return (
+      <SearchbarWrapper>
+        <SearchForm
+          onSubmit={event => {
+            event.preventDefault();
+            this.props.onSubmit(this.state.input);
+            event.target.input.value = '';
+          }}
+        >
+          <SearchFormButton type="submit">
+            <SearchFormButtonLabel>Search</SearchFormButtonLabel>
+          </SearchFormButton>
+          <SearchFormInput
+            onChange={this.onInput}
+            type="text"
+            name="input"
+            autocomplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+          />
+        </SearchForm>
+      </SearchbarWrapper>
+    );
+  }
+}

@@ -1,5 +1,5 @@
 import { Component } from 'react';
-
+import PropTypes from 'prop-types';
 import { Overlay, ModalWrapper } from './Modal.styled';
 
 export class Modal extends Component {
@@ -29,3 +29,8 @@ export class Modal extends Component {
     );
   }
 }
+
+Modal.propTypes = {
+  modalClose: PropTypes.func,
+  largeImageURL: PropTypes.string,
+};

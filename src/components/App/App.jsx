@@ -7,16 +7,16 @@ export class App extends Component {
   state = {
     photoList: [],
     input: '',
-    isOpen: false,
     modalImg: '',
+    isOpen: false,
     isLoading: false,
-    page: 1,
     isEmpty: false,
     isSeeMore: false,
+    page: 1,
     error: null,
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_, prevState) {
     const { input, page } = this.state;
 
     if (prevState.input !== input || prevState.page !== page) {
@@ -56,44 +56,45 @@ export class App extends Component {
   };
 
   onLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1, isLoading: true }));
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+      isSeeMore: false,
+      isLoading: true,
+    }));
   };
 
-  modalOpen = largeImageURL => {
+  toggleModal = largeImageURL => {
     this.setState({
       modalImg: largeImageURL,
-      isOpen: true,
+      isOpen: !this.state.isOpen,
     });
   };
 
-  modalClose = () => {
-    this.setState({ isOpen: false });
-  };
-
   render() {
+    const {
+      isEmpty,
+      photoList,
+      isSeeMore,
+      isLoading,
+      error,
+      modalImg,
+      isOpen,
+    } = this.state;
     return (
       <AppWrapper>
         <Searchbar onSubmit={this.onFormSubmit} />
-        {this.state.isEmpty ? (
+        {isEmpty ? (
           <Warning>Oops... Something went wrong</Warning>
         ) : (
-          <ImageGallery
-            photoList={this.state.photoList}
-            modalOpen={this.modalOpen}
-          />
+          <ImageGallery photoList={photoList} modalOpen={this.toggleModal} />
         )}
 
-        {this.state.isOpen && (
-          <Modal
-            largeImageURL={this.state.modalImg}
-            modalClose={this.modalClose}
-          />
+        {isOpen && (
+          <Modal largeImageURL={modalImg} modalClose={this.toggleModal} />
         )}
-        {this.state.isSeeMore && <Button onLoadMore={this.onLoadMore}></Button>}
-        {this.state.isLoading && <Loader />}
-        {this.state.error && (
-          <Warning textAlign="center">Sorry. {this.state.error} ... 😭</Warning>
-        )}
+        {isSeeMore && <Button onLoadMore={this.onLoadMore}></Button>}
+        {isLoading && <Loader />}
+        {error && <Warning textAlign="center">Sorry. {error} ... 😭</Warning>}
       </AppWrapper>
     );
   }

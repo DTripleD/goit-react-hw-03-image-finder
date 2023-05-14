@@ -27,7 +27,7 @@ export class Searchbar extends Component {
           }}
         >
           <SearchFormButton type="submit">
-            <SearchFormButtonLabel>Search</SearchFormButtonLabel>
+            <SearchFormButtonLabel>Find</SearchFormButtonLabel>
           </SearchFormButton>
           <SearchFormInput
             onChange={this.onInput}

@@ -15,10 +15,9 @@ export class App extends Component {
     isSeeMore: false,
   };
 
-  onFormSubmit = event => {
-    event.preventDefault();
+  onFormSubmit = (querry) => {
     this.setState({
-      input: event.target.input.value.trim(),
+      input: querry,
       photoList: [],
       page: 1,
       isLoading: true,
@@ -31,15 +30,18 @@ export class App extends Component {
     if (prevState.input !== input || prevState.page !== page) {
       Images.getImages(input, page)
         .then(({ hits, total }) => {
-          console.log(total);
+
           if (hits.length === 0) {
-            return this.setState({
-              isLoading: false,
+                      
+            this.setState({
               isEmpty: true,
               input: '',
               isSeeMore: false,
             });
-          } else {
+            return
+          }
+          if(hits.length > 0){
+            console.log(total);
             return this.setState(prevState => ({
               photoList: [...prevState.photoList, ...hits],
               isSeeMore: page < Math.ceil(total / 12),

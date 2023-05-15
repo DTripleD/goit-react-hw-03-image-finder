@@ -58,8 +58,6 @@ export class App extends Component {
   onLoadMore = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
-      isSeeMore: false,
-      isLoading: true,
     }));
   };
 

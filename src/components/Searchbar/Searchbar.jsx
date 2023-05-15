@@ -16,16 +16,17 @@ export class Searchbar extends Component {
   onInput = event => {
     this.setState({ input: event.target.value.trim() });
   };
+
+  onSearchbarSubmit = event => {
+    event.preventDefault();
+    this.props.onSubmit(this.state.input);
+    this.setState({ input: '' });
+  };
+
   render() {
     return (
       <SearchbarWrapper>
-        <SearchForm
-          onSubmit={event => {
-            event.preventDefault();
-            this.props.onSubmit(this.state.input);
-            event.target.input.value = '';
-          }}
-        >
+        <SearchForm onSubmit={this.onSearchbarSubmit}>
           <SearchFormButton type="submit">
             <SearchFormButtonLabel>Find</SearchFormButtonLabel>
           </SearchFormButton>
@@ -36,6 +37,7 @@ export class Searchbar extends Component {
             autocomplete="off"
             autoFocus
             placeholder="Search images and photos"
+            value={this.state.input}
           />
         </SearchForm>
       </SearchbarWrapper>

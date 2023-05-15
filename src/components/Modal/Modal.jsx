@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { Overlay, ModalWrapper } from './Modal.styled';
 
 export class Modal extends Component {
-  state = {};
-
   componentDidMount() {
     document.addEventListener('keydown', this.clickEsc);
   }
@@ -19,9 +17,15 @@ export class Modal extends Component {
     }
   };
 
+  handleClick = event => {
+    if (event.target === event.currentTarget) {
+      this.props.modalClose();
+    }
+  };
+
   render() {
     return (
-      <Overlay className="overlay" onClick={this.props.modalClose}>
+      <Overlay className="overlay" onClick={this.handleClick}>
         <ModalWrapper className="modal">
           <img src={this.props.largeImageURL} alt="" />
         </ModalWrapper>

@@ -13,7 +13,7 @@ export const ImageGallery = ({ photoList, modalOpen }) => {
             largeImageURL={item.largeImageURL}
             modalOpen={modalOpen}
             tag={item.tags}
-          ></ImageGalleryItem>
+          />
         );
       })}
     </ImageGalleryList>

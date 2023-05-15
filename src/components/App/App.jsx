@@ -45,6 +45,10 @@ export class App extends Component {
   }
 
   onFormSubmit = querry => {
+    if (querry === this.state.input) {
+      alert('Enter a new word');
+      return;
+    }
     this.setState({
       input: querry,
       page: 1,
